@@ -103,3 +103,18 @@ func (nc *NoteController) EditContent(c echo.Context) (err error) {
 
 	return c.JSON(http.StatusOK, note)
 }
+
+func (nc *NoteController) GetAll(c echo.Context) (err error) {
+	db := database.GetConnection()
+	notes := []models.Note{}
+	err = db.Model(&models.Note{}).Where("user_id = ?", c.Get("user").(models.User).ID).Find(&notes).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, utils.APIError{Message: "No notes found"})
+		}
+		log.Print(err)
+		return c.JSON(http.StatusInternalServerError, utils.APIError{Message: "An error has occurred"})
+	}
+
+	return c.JSON(http.StatusOK, notes)
+}
