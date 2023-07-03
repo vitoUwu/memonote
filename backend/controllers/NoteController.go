@@ -23,7 +23,7 @@ func (nc *NoteController) Create(c echo.Context) (err error) {
 	}
 
 	if err := c.Validate(requestBody); err != nil {
-		return c.JSON(http.StatusBadRequest, utils.APIError{Message: "Invalid request body"})
+		return err
 	}
 
 	db := database.GetConnection()
@@ -79,7 +79,7 @@ func (nc *NoteController) EditContent(c echo.Context) (err error) {
 	}
 
 	if err := c.Validate(body); err != nil {
-		return c.JSON(http.StatusBadRequest, utils.APIError{Message: "Invalid request body"})
+		return err
 	}
 
 	db := database.GetConnection()

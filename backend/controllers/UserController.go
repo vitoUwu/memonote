@@ -31,7 +31,7 @@ func (uc *UserController) Register(c echo.Context) (err error) {
 	}
 
 	if err = c.Validate(credentials); err != nil {
-		return c.JSON(http.StatusBadRequest, utils.APIError{Message: "Invalid request body"})
+		return err
 	}
 
 	db := database.GetConnection()
@@ -77,7 +77,7 @@ func (uc *UserController) Login(c echo.Context) (err error) {
 	}
 
 	if err := c.Validate(credentials); err != nil {
-		return c.JSON(http.StatusBadRequest, utils.APIError{Message: "Invalid request body"})
+		return err
 	}
 
 	db := database.GetConnection()

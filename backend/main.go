@@ -16,9 +16,25 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
+type FieldError struct {
+	Field   string
+	Message string
+}
+
+type FieldErrors struct {
+	Message string
+	Errors  []FieldError
+}
+
 func (cv *CustomValidator) Validate(i interface{}) error {
 	if err := cv.validator.Struct(i); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		validationErrors := err.(validator.ValidationErrors)
+		errors := make([]FieldError, len(validationErrors))
+		for _, validationError := range validationErrors {
+			errors = append(errors, FieldError{Field: validationError.Field(), Message: "required"})
+		}
+
+		return echo.NewHTTPError(http.StatusBadRequest, &FieldErrors{Message: "Validation Errors", Errors: errors})
 	}
 
 	return nil
