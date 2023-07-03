@@ -1,3 +1,4 @@
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 
@@ -22,7 +23,7 @@ export const actions = {
     }
 
     const [response, error] = await event
-      .fetch('http://localhost:3000/api/users/login', {
+      .fetch(`${PUBLIC_API_BASE_URL}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

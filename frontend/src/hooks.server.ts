@@ -1,4 +1,5 @@
 import { JWT_SECRET } from '$env/static/private';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 import type { Handle } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import type { User } from './lib/types';
@@ -38,7 +39,7 @@ export const handle = (async ({ event, resolve }) => {
   }
 
   const user = await event
-    .fetch('http://localhost:3000/api/users/me', { headers: { Authorization: token } })
+    .fetch(`${PUBLIC_API_BASE_URL}/api/users/me`, { headers: { Authorization: token } })
     .then((res) => res.json() as Promise<User>)
     .catch(console.error);
 
