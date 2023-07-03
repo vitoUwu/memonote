@@ -106,3 +106,7 @@ func (uc *UserController) Login(c echo.Context) (err error) {
 
 	return c.JSON(http.StatusOK, LoginResponse{AccessToken: token})
 }
+
+func (uc *UserController) Me(c echo.Context) (err error) {
+	return c.JSON(http.StatusOK, c.Get("user").(models.User))
+}
