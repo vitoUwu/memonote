@@ -55,13 +55,18 @@ func (uc *UserController) Register(c echo.Context) (err error) {
 
 	hash := string(bytes)
 
-	err = db.Model(&user).Create(&models.User{Username: credentials.Username, Password: hash}).Error
+	createdUser := models.User{
+		Username: credentials.Username,
+		Password: hash,
+	}
+
+	err = db.Model(&user).Create(&createdUser).Error
 	if err != nil {
 		log.Print(err)
 		return c.JSON(http.StatusInternalServerError, utils.APIError{Message: "An error has occurred"})
 	}
 
-	token, err := utils.EncodeUserToken(user.ID, user.Username)
+	token, err := utils.EncodeUserToken(createdUser.ID, createdUser.Username)
 	if err != nil {
 		log.Print(err)
 		return c.JSON(http.StatusInternalServerError, utils.APIError{Message: "An error has occurred"})
