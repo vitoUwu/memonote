@@ -6,11 +6,17 @@
 	import { twMerge } from 'tailwind-merge';
 	import Button from '../../components/Button.svelte';
 	import TextInput from '../../components/TextInput.svelte';
+	import FormError from '../../components/form/FormError.svelte';
 	import type { ActionData } from './$types';
+
+	const invalidUsername = /[^a-zA-Z_]/g;
+	const validPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/g;
 
 	let hiddenPassword = true;
 	let hiddenConfirmPassword = true;
 	let loading = false;
+	let username = '';
+	let password = '';
 	export let form: ActionData;
 
 	function clickPassword() {
@@ -43,15 +49,34 @@
 		class="flex flex-col justify-center items-center gap-3 w-[80%] lg:w-[30%]"
 	>
 		{#if form && form.error}
-			<p class="px-2 rounded bg-blue-600/20 text-blue-600 text-center">{form.error}</p>
+			<FormError>{form.error}</FormError>
 		{/if}
 		<div class="flex flex-col gap-2 w-full">
 			<label for="username">Username</label>
-			<TextInput disabled={loading} type="text" id="username" name="username" required />
+			<TextInput
+				onChange={(value) => (username = value)}
+				disabled={loading}
+				type="text"
+				id="username"
+				name="username"
+				required
+			/>
+			<!-- {#if username.length}
+				{#if invalidUsername.exec(username)}
+					<FormError>
+						Your username contains invalid characters. Use only uppercase and lowercase letters or
+						"_"
+					</FormError>
+				{/if}
+				{#if username.length > 15 || username.length < 2}
+					<FormError>Username length must be between 2 and 15</FormError>
+				{/if}
+			{/if} -->
 		</div>
 		<div class="flex flex-col gap-2 w-full">
 			<label for="password">Password</label>
 			<TextInput
+				onChange={(value) => (password = value)}
 				disabled={loading}
 				type={hiddenPassword ? 'password' : 'text'}
 				name="password"
@@ -62,12 +87,20 @@
 					<p>👀</p>
 					<span
 						class={twMerge(
-							'absolute left-[50%] -translate-x-1/2 scale-[2] rotate-90 transition-all',
-							hiddenPassword ? 'top-[50%] -translate-y-1/2' : 'top-0 -translate-y-1/2 '
+							'absolute left-[50%] -translate-x-1/2 scale-[2] rotate-90 transition-all -translate-y-1/2',
+							hiddenPassword ? 'top-[50%]' : 'top-0'
 						)}>🤚</span
 					>
 				</Button>
 			</TextInput>
+			<!-- {#if password.length}
+				{#if validPassword.exec(password) === null}
+					<FormError>
+						Your password must includes minimum 8 characters, one upper letter, one lower letter and
+						one number
+					</FormError>
+				{/if}
+			{/if} -->
 		</div>
 		<div class="flex flex-col gap-2 w-full">
 			<label for="password">Confirm Password</label>
@@ -96,7 +129,11 @@
 			</TextInput>
 		</div>
 		<div class="w-full">
-			<Button disabled={loading} type="submit" className="w-full font-bold text-lg flex justify-center">
+			<Button
+				disabled={loading}
+				type="submit"
+				className="w-full font-bold text-lg flex justify-center"
+			>
 				{#if loading}
 					<Loader2 class="animate-spin" />
 				{:else}

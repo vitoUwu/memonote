@@ -7,6 +7,7 @@ export type User = {
 
 export type Note = {
 	id: string;
+	title: string;
 	content: string;
 	user_id: string;
 	created_at: string;

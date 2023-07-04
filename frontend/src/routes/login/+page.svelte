@@ -6,6 +6,7 @@
 	import { twMerge } from 'tailwind-merge';
 	import Button from '../../components/Button.svelte';
 	import TextInput from '../../components/TextInput.svelte';
+	import FormError from '../../components/form/FormError.svelte';
 	import type { ActionData } from './$types';
 
 	let hidden = true;
@@ -26,9 +27,9 @@
 	<form
 		use:enhance={() => {
 			loading = true;
-      if (form) {
-        form.error = '';
-      }
+			if (form) {
+				form.error = '';
+			}
 			return async ({ update }) => {
 				await update();
 				loading = false;
@@ -39,7 +40,7 @@
 		class="flex flex-col justify-center items-center gap-3 w-[80%] lg:w-[30%]"
 	>
 		{#if form && form.error !== ''}
-			<p class="px-2 rounded bg-blue-600/20 text-blue-600">{form.error}</p>
+			<FormError>{form.error}</FormError>
 		{/if}
 		<div class="flex flex-col gap-2 w-full">
 			<label for="username">Username</label>

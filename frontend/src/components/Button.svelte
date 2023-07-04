@@ -16,7 +16,7 @@
 	on:click={onClick}
 	class={twMerge(
 		'bg-zinc-800 border-zinc-700 border rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600',
-    'disabled:bg-zinc-900 disabled:border-zinc-800 disabled:cursor-not-allowed',
+		'disabled:bg-zinc-900 disabled:border-zinc-800 disabled:cursor-not-allowed',
 		className
 	)}
 >
