@@ -19,6 +19,7 @@ type NoteController struct{}
 func (nc *NoteController) Create(c echo.Context) (err error) {
 	requestBody := new(dtos.CreateNote)
 	if err := c.Bind(requestBody); err != nil {
+		log.Println(err)
 		return c.JSON(http.StatusBadRequest, utils.APIError{Message: "Invalid request body"})
 	}
 
@@ -27,7 +28,7 @@ func (nc *NoteController) Create(c echo.Context) (err error) {
 	}
 
 	db := database.GetConnection()
-	note := models.Note{Content: requestBody.Content, UserID: c.Get("user").(models.User).ID}
+	note := models.Note{Content: requestBody.Content, Title: requestBody.Title, UserID: c.Get("user").(models.User).ID}
 	err = db.Create(&note).Error
 	if err != nil {
 		log.Fatal(err)
@@ -65,7 +66,7 @@ func (nc *NoteController) Delete(c echo.Context) (err error) {
 	return c.NoContent(http.StatusOK)
 }
 
-func (nc *NoteController) EditContent(c echo.Context) (err error) {
+func (nc *NoteController) Edit(c echo.Context) (err error) {
 	noteId := c.Param("id")
 	_, err = uuid.Parse(noteId)
 
@@ -93,7 +94,13 @@ func (nc *NoteController) EditContent(c echo.Context) (err error) {
 		return c.JSON(http.StatusInternalServerError, utils.APIError{Message: "An error has occurred"})
 	}
 
-	note.Content = body.Content
+	if body.Content != nil {
+		note.Content = *body.Content
+	}
+
+	if body.Title != nil {
+		note.Title = *body.Title
+	}
 
 	err = db.Save(&note).Error
 	if err != nil {
