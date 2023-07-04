@@ -118,3 +118,25 @@ func (nc *NoteController) GetAll(c echo.Context) (err error) {
 
 	return c.JSON(http.StatusOK, notes)
 }
+
+func (nc *NoteController) GetById(c echo.Context) (err error) {
+	noteId := c.Param("id")
+	_, err = uuid.Parse(noteId)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.APIError{Message: "Invalid note id"})
+	}
+
+	db := database.GetConnection()
+	note := models.Note{}
+	err = db.Model(&note).Where("id = ?", noteId).Where("user_id = ?", c.Get("user").(models.User).ID).First(&note).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, utils.APIError{Message: "Note not found"})
+		}
+		log.Print(err)
+		return c.JSON(http.StatusInternalServerError, utils.APIError{Message: "An error has occurred"})
+	}
+
+	return c.JSON(http.StatusOK, note)
+}
