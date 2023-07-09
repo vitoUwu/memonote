@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { invalidate, invalidateAll } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { invalidate } from '$app/navigation';
 	import Note from '../components/Note.svelte';
 	import NoteEditor from '../components/NoteEditor.svelte';
 	import type { ActionData, PageData } from './$types';
 
 	export let form: ActionData;
 	export let data: PageData;
-
-	onMount(async () => {
-		await invalidateAll();
-	});
 
 	async function handleDelete(id: string) {
 		await fetch('/notes/delete', {
