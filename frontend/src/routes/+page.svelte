@@ -17,11 +17,13 @@
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				if (data.success === true) {
-					invalidate('/');
+				if (data.success !== true) {
+					console.error(data);
+					alert('An error has occurred while deleting your note');
+					return;
 				}
-
-				console.error(data);
+				
+				invalidate('/');
 			})
 			.catch(console.error);
 	}
