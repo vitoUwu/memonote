@@ -26,7 +26,6 @@ export const load = (async ({ cookies, fetch }) => {
   }
 
   return {
-    token,
     notes: response as Note[]
   };
 }) satisfies PageServerLoad;
